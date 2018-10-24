@@ -5,16 +5,55 @@ import { connect } from 'react-redux';
 class TodoList extends Component{
 	constructor(props){
 		super(props);
-		
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.removeTodo = this.removeTodo.bind(this);
+		this.state = {
+			task: ''
+		};
+	}
+
+	handleSubmit(e){
+		e.preventDefault();
+		// debugger
+		this.props.dispatch({
+			type: 'ADD_TODO',
+			task: this.state.task
+		})
+		e.target.reset();
+	}
+
+	handleChange(e){
+		this.setState({
+			[e.target.name]: e.target.value
+		})
+	}
+
+	removeTodo(id){
+		// debugger
+		this.props.dispatch({
+			type: 'REMOVE_TODO',
+			id
+		})
 	}
 
 	render(){
 		// debugger;
 		let todos = this.props.todoss.map((todo, index) => (
-			<Todo task={todo} key={index} />
+			<Todo removeTodo={this.removeTodo.bind(this, todo.id)} task={todo.task} key={index} />
 		));
 		return(
 			<div className=''>
+				<form onSubmit={this.handleSubmit}>
+					<label htmlFor='task'>Task</label>
+					<input
+						type='text'
+						name='task'
+						id='task'
+						onChange={this.handleChange}
+					/>
+					<button>Add a Todo!</button>
+				</form>
 				<ul>{todos}</ul>
 			</div>
 		)
